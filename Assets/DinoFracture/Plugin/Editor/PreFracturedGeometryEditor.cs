@@ -481,6 +481,8 @@ namespace DinoFracture.Editor
 
         private GameObject FindExistingFracturedAsset(PreFracturedGeometry geomComp)
         {
+            return null;
+
             string[] blankObjGuids = AssetDatabase.FindAssets("t:DinoFracture.FractureMeshesMetadata");
             for (int j = 0; j < blankObjGuids.Length; j++)
             {
