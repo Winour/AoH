@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5806703978936556773}
   - component: {fileID: 5806306975180902207}
   m_Layer: 0
-  m_Name: SM_Bld_OfficeOld_Large_Base_04
+  m_Name: NO_SM_Bld_OfficeOld_Large_Base_04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
