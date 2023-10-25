@@ -84,13 +84,14 @@ namespace StarterAssets
         // timeout deltatime
         private float _jumpTimeoutDelta;
         private float _fallTimeoutDelta;
+        public float BasicAttackTimeOut;
 
         // animation IDs
         private int _animIDSpeed;
         private int _animIDGrounded;
-        private int _animIDJump;
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
+        private int _animIDBasicAttack;
 
 #if ENABLE_INPUT_SYSTEM 
         private PlayerInput _playerInput;
@@ -153,6 +154,7 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
+            BasicAttack();
         }
 
         private void LateUpdate()
@@ -164,9 +166,9 @@ namespace StarterAssets
         {
             _animIDSpeed = Animator.StringToHash("Speed");
             _animIDGrounded = Animator.StringToHash("Grounded");
-            _animIDJump = Animator.StringToHash("Jump");
             _animIDFreeFall = Animator.StringToHash("FreeFall");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+            _animIDBasicAttack = Animator.StringToHash("BasicAttack");
         }
 
         private void GroundedCheck()
@@ -207,6 +209,11 @@ namespace StarterAssets
 
         private void Move()
         {
+            if(IsBasicAttacking())
+            {
+                return;
+            }
+
             // set target speed based on move speed, sprint speed and if sprint is pressed
             float targetSpeed = MoveSpeed;
 
@@ -229,7 +236,7 @@ namespace StarterAssets
                 // creates curved result rather than a linear one giving a more organic speed change
                 // note T in Lerp is clamped, so we don't need to clamp our speed
                 _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
-                    Time.deltaTime * SpeedChangeRate);
+                    70f);
 
                 // round speed to 3 decimal places
                 _speed = Mathf.Round(_speed * 1000f) / 1000f;
@@ -283,7 +290,6 @@ namespace StarterAssets
                 // update animator if using character
                 if (_hasAnimator)
                 {
-                    _animator.SetBool(_animIDJump, false);
                     _animator.SetBool(_animIDFreeFall, false);
                 }
 
@@ -327,6 +333,24 @@ namespace StarterAssets
             {
                 _verticalVelocity += Gravity * Time.deltaTime;
             }
+        }
+
+        private void BasicAttack()
+        {
+            if(!_input.basicAttack || IsBasicAttacking())
+            {
+                _input.basicAttack = false;
+                return;
+            }
+
+            BasicAttackTimeOut = Time.time + 0.5f;
+            _animator.SetTrigger(_animIDBasicAttack);
+            _input.basicAttack = false;
+        }
+
+        private bool IsBasicAttacking()
+        {
+            return BasicAttackTimeOut > Time.time;
         }
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)

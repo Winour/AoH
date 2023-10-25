@@ -1689,13 +1689,13 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 1.8
-  m_Radius: 0.28
+  m_Height: 6
+  m_Radius: 1.17
   m_SlopeLimit: 45
   m_StepOffset: 0.25
   m_SkinWidth: 0.02
   m_MinMoveDistance: 0
-  m_Center: {x: 0, y: 0.93, z: 0}
+  m_Center: {x: 0, y: 3, z: 0}
 --- !u!114 &5866666020621028527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1712,6 +1712,7 @@ MonoBehaviour:
   look: {x: 0, y: 0}
   jump: 0
   sprint: 0
+  basicAttack: 0
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1
@@ -1728,9 +1729,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveSpeed: 26
-  SprintSpeed: 26
   RotationSmoothTime: 0.12
-  SpeedChangeRate: 5000
+  SpeedChangeRate: 25
   LandingAudioClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
   FootstepAudioClips:
   - {fileID: 8300000, guid: 72f526a6a9890f643a88e85a61c86c8a, type: 3}
@@ -1744,7 +1744,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 274649b0e221539409070ebf6c18918b, type: 3}
   - {fileID: 8300000, guid: a3194b8bbc96ef84fab1f98f4b7dae3e, type: 3}
   FootstepAudioVolume: 0.3
-  JumpHeight: 1.2
   Gravity: -15
   JumpTimeout: 0.3
   FallTimeout: 0.15
@@ -1759,6 +1758,7 @@ MonoBehaviour:
   BottomClamp: -30
   CameraAngleOverride: 0
   LockCameraPosition: 0
+  BasicAttackTimeOut: 0
 --- !u!114 &5866666020621028529
 MonoBehaviour:
   m_ObjectHideFlags: 0
