@@ -1,4 +1,5 @@
-﻿ using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -14,6 +15,10 @@ namespace StarterAssets
 #endif
     public class ThirdPersonController : MonoBehaviour
     {
+        [Header("Colliders")]
+        public Collider LeftPunch;
+        public Collider RightLeg;
+
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
         public float MoveSpeed = 2.0f;
@@ -104,6 +109,7 @@ namespace StarterAssets
         private const float _threshold = 0.01f;
 
         private bool _hasAnimator;
+        private Dictionary<string, Collider> _colliders = new Dictionary<string, Collider>();
 
         private bool IsCurrentDeviceMouse
         {
@@ -125,6 +131,9 @@ namespace StarterAssets
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
+
+            _colliders.Add("LeftPunch", LeftPunch);
+            _colliders.Add("RightLeg", RightLeg);
         }
 
         private void Start()
@@ -141,6 +150,7 @@ namespace StarterAssets
 #endif
 
             AssignAnimationIDs();
+            ResetAllColliders();
 
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
@@ -209,7 +219,7 @@ namespace StarterAssets
 
         private void Move()
         {
-            if(IsBasicAttacking())
+            if(IsAttacking())
             {
                 return;
             }
@@ -335,6 +345,30 @@ namespace StarterAssets
             }
         }
 
+        public void ResetAllColliders()
+        {
+            foreach(var collider in _colliders)
+            {
+                collider.Value.enabled = false;
+            }
+        }
+
+        public void StartAttack(string attack)
+        {
+            if(_colliders.TryGetValue(attack, out var collider))
+            {
+                collider.enabled = true;
+            }
+        }
+
+        public void FinishAttack(string attack)
+        {
+            if(_colliders.TryGetValue(attack, out var collider))
+            {
+                collider.enabled = false;
+            }
+        }
+
         private void BasicAttack()
         {
             if(!_input.basicAttack || IsBasicAttacking())
@@ -346,6 +380,11 @@ namespace StarterAssets
             BasicAttackTimeOut = Time.time + 0.5f;
             _animator.SetTrigger(_animIDBasicAttack);
             _input.basicAttack = false;
+        }
+
+        private bool IsAttacking()
+        {
+            return IsBasicAttacking();
         }
 
         private bool IsBasicAttacking()

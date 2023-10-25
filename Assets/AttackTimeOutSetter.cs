@@ -7,6 +7,8 @@ public class AttackTimeOutSetter : StateMachineBehaviour
 {
     public bool IsBasicAttack;
     public float timeout;
+    public string AttackId;
+
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -15,8 +17,16 @@ public class AttackTimeOutSetter : StateMachineBehaviour
         {
             return;
         }
+        if(IsBasicAttack)
+        {
+            controller.BasicAttackTimeOut = Time.time + timeout;
+        }
+        else
+        {
 
-        controller.BasicAttackTimeOut = Time.time + timeout;
+        }
+
+        controller.StartAttack(AttackId);
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -26,10 +36,16 @@ public class AttackTimeOutSetter : StateMachineBehaviour
     //}
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-    //override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        var controller = animator.GetComponent<ThirdPersonController>();
+        if(controller == null)
+        {
+            return;
+        }
+
+        controller.FinishAttack(AttackId);
+    }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
     //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
