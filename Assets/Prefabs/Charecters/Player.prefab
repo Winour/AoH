@@ -1655,6 +1655,7 @@ GameObject:
   - component: {fileID: 5866666020621028527}
   - component: {fileID: 5866666020621028528}
   - component: {fileID: 5866666020621028529}
+  - component: {fileID: 5866666020621028531}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1720,8 +1721,8 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 6
-  m_Radius: 1.17
+  m_Height: 6.43
+  m_Radius: 1.21
   m_SlopeLimit: 45
   m_StepOffset: 0.25
   m_SkinWidth: 0.02
@@ -1782,7 +1783,7 @@ MonoBehaviour:
   FallTimeout: 0.15
   Grounded: 1
   GroundedOffset: -0.14
-  GroundedRadius: 0.28
+  GroundedRadius: 0.78
   GroundLayers:
     serializedVersion: 2
     m_Bits: 513
@@ -1823,6 +1824,23 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &5866666020621028531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4202673927391711573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 909d917d73a63f940ac158d02e936645, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pushLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  canPush: 1
+  strength: 3.5
 --- !u!1 &4828338325413667991
 GameObject:
   m_ObjectHideFlags: 0
