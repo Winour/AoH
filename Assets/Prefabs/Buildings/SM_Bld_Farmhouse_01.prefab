@@ -205,7 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d27bdb455b9c9e43ab54cf38b0eb5df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ForceThreshold: 0
+  ForceThreshold: 5
   ForceFalloffRadius: 1
   AdjustForKinematic: 1
   CollidableLayers:

@@ -16,8 +16,8 @@ namespace StarterAssets
     public class ThirdPersonController : MonoBehaviour
     {
         [Header("Colliders")]
-        public Collider LeftPunch;
-        public Collider RightLeg;
+        public GameObject LeftPunch;
+        public GameObject RightLeg;
 
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
@@ -89,7 +89,7 @@ namespace StarterAssets
         // timeout deltatime
         private float _jumpTimeoutDelta;
         private float _fallTimeoutDelta;
-        public float BasicAttackTimeOut;
+        public float AttackTimeOut;
 
         // animation IDs
         private int _animIDSpeed;
@@ -97,6 +97,7 @@ namespace StarterAssets
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
         private int _animIDBasicAttack;
+        private int _animIDSpecialAttack;
 
 #if ENABLE_INPUT_SYSTEM 
         private PlayerInput _playerInput;
@@ -109,7 +110,7 @@ namespace StarterAssets
         private const float _threshold = 0.01f;
 
         private bool _hasAnimator;
-        private Dictionary<string, Collider> _colliders = new Dictionary<string, Collider>();
+        private Dictionary<string, GameObject> _colliders = new Dictionary<string, GameObject>();
 
         private bool IsCurrentDeviceMouse
         {
@@ -165,6 +166,7 @@ namespace StarterAssets
             GroundedCheck();
             Move();
             BasicAttack();
+            SpecialAttack();
         }
 
         private void LateUpdate()
@@ -179,6 +181,7 @@ namespace StarterAssets
             _animIDFreeFall = Animator.StringToHash("FreeFall");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
             _animIDBasicAttack = Animator.StringToHash("BasicAttack");
+            _animIDSpecialAttack = Animator.StringToHash("SpecialAttack_01");
         }
 
         private void GroundedCheck()
@@ -349,7 +352,7 @@ namespace StarterAssets
         {
             foreach(var collider in _colliders)
             {
-                collider.Value.enabled = false;
+                collider.Value.SetActive(false);
             }
         }
 
@@ -357,7 +360,7 @@ namespace StarterAssets
         {
             if(_colliders.TryGetValue(attack, out var collider))
             {
-                collider.enabled = true;
+                collider.SetActive(true);
             }
         }
 
@@ -365,31 +368,39 @@ namespace StarterAssets
         {
             if(_colliders.TryGetValue(attack, out var collider))
             {
-                collider.enabled = false;
+                collider.SetActive(false);
             }
         }
 
         private void BasicAttack()
         {
-            if(!_input.basicAttack || IsBasicAttacking())
+            if(!_input.basicAttack || IsAttacking())
             {
                 _input.basicAttack = false;
                 return;
             }
 
-            BasicAttackTimeOut = Time.time + 0.5f;
+            AttackTimeOut = Time.time + 0.5f;
             _animator.SetTrigger(_animIDBasicAttack);
             _input.basicAttack = false;
         }
 
-        private bool IsAttacking()
+        private void SpecialAttack()
         {
-            return IsBasicAttacking();
+            if(!_input.specialAttack || IsAttacking())
+            {
+                _input.specialAttack = false;
+                return;
+            }
+
+            AttackTimeOut = Time.time + 0.5f;
+            _animator.SetTrigger(_animIDSpecialAttack);
+            _input.specialAttack = false;
         }
 
-        private bool IsBasicAttacking()
+        private bool IsAttacking()
         {
-            return BasicAttackTimeOut > Time.time;
+            return AttackTimeOut > Time.time;
         }
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)

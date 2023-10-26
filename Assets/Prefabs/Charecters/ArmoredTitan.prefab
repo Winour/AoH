@@ -1934,6 +1934,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5028157628473394242}
   - component: {fileID: 1380272392272485944}
+  - component: {fileID: 67683529}
+  - component: {fileID: 67683527}
+  - component: {fileID: 67683528}
   m_Layer: 0
   m_Name: ArmoredTitan
   m_TagString: Untagged
@@ -1978,7 +1981,7 @@ Animator:
   m_GameObject: {fileID: 5659980288393191160}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: c4999ee0841a1d54eb881761a76f80d2, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ed495c33538298f4caefd94cb12c0e9a, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -1989,6 +1992,57 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!136 &67683529
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5659980288393191160}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 1.94
+  m_Height: 10
+  m_Direction: 1
+  m_Center: {x: 0, y: 5, z: 0}
+--- !u!195 &67683527
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5659980288393191160}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 1.7
+  m_Speed: 0
+  m_Acceleration: 500
+  avoidancePriority: 50
+  m_AngularSpeed: 720
+  m_StoppingDistance: 2
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 6.62
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &67683528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5659980288393191160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12270e859a1d5e344889b726b92e091d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _navAgent: {fileID: 67683527}
+  _target: {fileID: 0}
+  _animator: {fileID: 1380272392272485944}
 --- !u!1 &5825496842835448900
 GameObject:
   m_ObjectHideFlags: 0

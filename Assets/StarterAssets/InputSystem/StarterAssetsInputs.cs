@@ -13,6 +13,7 @@ namespace StarterAssets
 		public bool jump;
 		public bool sprint;
 		public bool basicAttack;
+		public bool specialAttack;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -49,6 +50,11 @@ namespace StarterAssets
         {
 			BasicAttackInput(value.isPressed);
 		}
+
+		public void OnSpecialAttack(InputValue value)
+		{
+			SpecialAttackInput(value.isPressed);
+		}
 #endif
 
 
@@ -75,6 +81,11 @@ namespace StarterAssets
 		public void BasicAttackInput(bool newAttackState)
 		{
 			basicAttack = newAttackState;
+		}
+
+		public void SpecialAttackInput(bool newAttackState)
+		{
+			specialAttack = newAttackState;
 		}
 
 		private void OnApplicationFocus(bool hasFocus)

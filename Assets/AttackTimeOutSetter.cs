@@ -6,6 +6,7 @@ using UnityEngine;
 public class AttackTimeOutSetter : StateMachineBehaviour
 {
     public bool IsBasicAttack;
+    public float attackDelay;
     public float timeout;
     public string AttackId;
 
@@ -19,14 +20,14 @@ public class AttackTimeOutSetter : StateMachineBehaviour
         }
         if(IsBasicAttack)
         {
-            controller.BasicAttackTimeOut = Time.time + timeout;
+            controller.AttackTimeOut = Time.time + timeout;
         }
         else
         {
 
         }
 
-        controller.StartAttack(AttackId);
+        DelayedActions.DelayedAction(() => controller.StartAttack(AttackId), attackDelay);
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
