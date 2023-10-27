@@ -406,7 +406,7 @@ namespace StarterAssets
             targetLookAt.y = this.transform.position.y;
             this.transform.LookAt(targetLookAt);
             AttackTimeOut = Time.time + 0.5f;
-            EnemyController.ReceiveSpecialAttack(attackToDo);
+            EnemyController.ReceiveSpecialAttack(attackToDo, _attacksDone % 2);
             _animator.Play(attackToDo);
             _input.specialAttack = false;
             _attacksDone++;

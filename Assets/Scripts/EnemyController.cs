@@ -9,6 +9,8 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private NavMeshAgent _navAgent;
     [SerializeField] private ThirdPersonController _target;
     [SerializeField] private Animator _animator;
+    [SerializeField] private Collider _collider;
+    [SerializeField] private Rigidbody _hipsRigidBody;
 
     private float _currentSpeedAnimator;
     private float _stunTimeOut;
@@ -73,7 +75,7 @@ public class EnemyController : MonoBehaviour
         return _stunTimeOut > Time.time;
     }
 
-    public void ReceiveSpecialAttack(string attack)
+    public void ReceiveSpecialAttack(string attack, int id)
     {
         _isDead = true;
         _navAgent.enabled = false;
@@ -85,5 +87,13 @@ public class EnemyController : MonoBehaviour
         this.transform.LookAt(targetLookAt);
         _animator.Rebind();
         _animator.Play($"Get{attack}");
+        DelayedActions.DelayedAction(ActivateRagdoll, id == 0 ? 1.6f : 1.25f);
+    }
+
+    private void ActivateRagdoll()
+    {
+        _animator.enabled = false;
+        _collider.enabled = false;
+        _hipsRigidBody.AddExplosionForce(100000f, _target.transform.position, 5000f);
     }
 }
