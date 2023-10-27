@@ -392,6 +392,8 @@ namespace StarterAssets
 
         public EnemyController EnemyController;
 
+        private int _attacksDone;
+
         private void SpecialAttack()
         {
             if(!_input.specialAttack || IsAttacking())
@@ -399,14 +401,15 @@ namespace StarterAssets
                 _input.specialAttack = false;
                 return;
             }
-
+            var attackToDo = _attacksDone % 2 == 0 ? "SpecialAttack_01" : "SpecialAttack_02";
             var targetLookAt = EnemyController.transform.position;
             targetLookAt.y = this.transform.position.y;
             this.transform.LookAt(targetLookAt);
             AttackTimeOut = Time.time + 0.5f;
-            EnemyController.ReceiveSpecialAttack();
-            _animator.Play(_animIDSpecialAttack);
+            EnemyController.ReceiveSpecialAttack(attackToDo);
+            _animator.Play(attackToDo);
             _input.specialAttack = false;
+            _attacksDone++;
         }
 
         private bool IsAttacking()

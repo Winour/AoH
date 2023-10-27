@@ -73,7 +73,7 @@ public class EnemyController : MonoBehaviour
         return _stunTimeOut > Time.time;
     }
 
-    public void ReceiveSpecialAttack()
+    public void ReceiveSpecialAttack(string attack)
     {
         _isDead = true;
         _navAgent.enabled = false;
@@ -84,6 +84,6 @@ public class EnemyController : MonoBehaviour
         targetLookAt.y = this.transform.position.y;
         this.transform.LookAt(targetLookAt);
         _animator.Rebind();
-        _animator.Play("GetSpecialAttack_01");
+        _animator.Play($"Get{attack}");
     }
 }
