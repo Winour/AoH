@@ -18,16 +18,13 @@ public class AttackTimeOutSetter : StateMachineBehaviour
         {
             return;
         }
+
+        controller.AttackTimeOut = Time.time + timeout;
+
         if(IsBasicAttack)
         {
-            controller.AttackTimeOut = Time.time + timeout;
+            DelayedActions.DelayedAction(() => controller.StartAttack(AttackId), attackDelay);
         }
-        else
-        {
-
-        }
-
-        DelayedActions.DelayedAction(() => controller.StartAttack(AttackId), attackDelay);
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -45,7 +42,10 @@ public class AttackTimeOutSetter : StateMachineBehaviour
             return;
         }
 
-        controller.FinishAttack(AttackId);
+        if(IsBasicAttack)
+        {
+            controller.FinishAttack(AttackId);
+        }
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

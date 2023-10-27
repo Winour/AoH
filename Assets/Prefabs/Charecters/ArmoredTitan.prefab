@@ -1937,7 +1937,7 @@ GameObject:
   - component: {fileID: 67683529}
   - component: {fileID: 67683527}
   - component: {fileID: 67683528}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ArmoredTitan
   m_TagString: Untagged
   m_Icon: {fileID: 0}

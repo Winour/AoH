@@ -224,7 +224,12 @@ namespace StarterAssets
         {
             if(IsAttacking())
             {
+                _controller.enabled = false;
                 return;
+            }
+            else
+            {
+                _controller.enabled = true;
             }
 
             // set target speed based on move speed, sprint speed and if sprint is pressed
@@ -385,6 +390,8 @@ namespace StarterAssets
             _input.basicAttack = false;
         }
 
+        public EnemyController EnemyController;
+
         private void SpecialAttack()
         {
             if(!_input.specialAttack || IsAttacking())
@@ -393,8 +400,12 @@ namespace StarterAssets
                 return;
             }
 
+            var targetLookAt = EnemyController.transform.position;
+            targetLookAt.y = this.transform.position.y;
+            this.transform.LookAt(targetLookAt);
             AttackTimeOut = Time.time + 0.5f;
-            _animator.SetTrigger(_animIDSpecialAttack);
+            EnemyController.ReceiveSpecialAttack();
+            _animator.Play(_animIDSpecialAttack);
             _input.specialAttack = false;
         }
 

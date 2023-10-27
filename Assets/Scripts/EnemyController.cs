@@ -13,12 +13,20 @@ public class EnemyController : MonoBehaviour
     private float _currentSpeedAnimator;
     private float _stunTimeOut;
 
+    private bool _isDead;
+
     void Start()
     {
+        _isDead = true;
     }
 
     void Update()
     {
+        if(_isDead)
+        {
+            return;
+        }
+
         if(IsStunned())
         {
             _navAgent.speed = 0;
@@ -63,5 +71,19 @@ public class EnemyController : MonoBehaviour
     private bool IsStunned()
     {
         return _stunTimeOut > Time.time;
+    }
+
+    public void ReceiveSpecialAttack()
+    {
+        _isDead = true;
+        _navAgent.enabled = false;
+
+        this.transform.position = _target.transform.position + _target.transform.forward * 24f;
+
+        var targetLookAt = _target.transform.position;
+        targetLookAt.y = this.transform.position.y;
+        this.transform.LookAt(targetLookAt);
+        _animator.Rebind();
+        _animator.Play("GetSpecialAttack_01");
     }
 }
