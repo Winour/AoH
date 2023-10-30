@@ -117,6 +117,8 @@ namespace StarterAssets
         private Dictionary<string, GameObject> _colliders = new Dictionary<string, GameObject>();
 
         private float _currentEnergy;
+        private float _stunTimeOut;
+        private bool _isGameOver;
 
         private bool IsCurrentDeviceMouse
         {
@@ -163,6 +165,7 @@ namespace StarterAssets
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
             UpdateEnergyDisplay();
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         private void Update()
@@ -288,7 +291,7 @@ namespace StarterAssets
 
         private void Move()
         {
-            if(IsAttacking())
+            if(IsAttacking() || IsStunned())
             {
                 _controller.enabled = false;
                 return;
@@ -450,7 +453,7 @@ namespace StarterAssets
 
         private void BasicAttack()
         {
-            if(!_input.basicAttack || IsAttacking())
+            if(_isGameOver || !_input.basicAttack || IsAttacking() || IsStunned())
             {
                 _input.basicAttack = false;
                 return;
@@ -465,7 +468,7 @@ namespace StarterAssets
 
         private void SpecialAttack()
         {
-            if(!_input.specialAttack || IsAttacking())
+            if(!_input.specialAttack || IsAttacking() || IsStunned())
             {
                 _input.specialAttack = false;
                 return;
@@ -488,11 +491,30 @@ namespace StarterAssets
             _animator.Play(attackToDo);
             _input.specialAttack = false;
             _attacksDone++;
+
+            DelayedActions.DelayedAction(CheckGameIsFinished, 4f);
         }
 
         private bool IsAttacking()
         {
             return AttackTimeOut > Time.time;
+        }
+
+        [SerializeField] private GameObject _gameOverMenu;
+
+        private void CheckGameIsFinished()
+        {
+            foreach(var enemy in _enemies)
+            {
+                if(!enemy.IsDead)
+                {
+                    return;
+                }
+            }
+            _input.cursorLocked = false;
+            Cursor.lockState = CursorLockMode.None;
+            _gameOverMenu.SetActive(true);
+            _isGameOver = true;
         }
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
@@ -544,17 +566,25 @@ namespace StarterAssets
             }
         }
 
+        private bool IsStunned()
+        {
+            return _stunTimeOut > Time.time;
+        }
+
         private void GetHit()
         {
-            if(IsAttacking())
+            if(IsAttacking() || IsStunned())
             {
                 return;
             }
 
+            ResetAllColliders();
             LooseEnergy();
             ResetAllColliders();
             AttackTimeOut = 0f;
-            Debug.Log("ARG!");
+            _stunTimeOut = Time.time + 0.8f;
+            _animator.Rebind();
+            _animator.Play("GetHit");
         }
     }
 }
