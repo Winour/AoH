@@ -39,16 +39,16 @@ public class EnemyController : MonoBehaviour
         {
             var distanceToPlayer = Vector3.Distance(this.transform.position, _target.transform.position);
 
-            if(distanceToPlayer < 15f)
-            {
-                AttackTimeOut = Time.time + 0.5f;
-                _animator.SetTrigger("SpecialAttack");
-            }
-            else 
-                if(distanceToPlayer < 8f)
+
+            if(distanceToPlayer < 8f)
             {
                 AttackTimeOut = Time.time + 0.5f;
                 _animator.SetTrigger("BasicAttack");
+            }
+            else if(distanceToPlayer < 15f)
+            {
+                AttackTimeOut = Time.time + 0.5f;
+                _animator.SetTrigger("SpecialAttack");
             }
         }
 
