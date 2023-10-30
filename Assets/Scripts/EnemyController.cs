@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using DG.Tweening;
 
 public class EnemyController : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private Animator _animator;
     [SerializeField] private Collider _collider;
     [SerializeField] private Rigidbody _hipsRigidBody;
+    [SerializeField] private GameObject _ultimateDisplay;
 
     [Header("Attack Colliders")]
     public GameObject BasicAttack;
@@ -20,17 +22,18 @@ public class EnemyController : MonoBehaviour
     private float _currentSpeedAnimator;
     private float _stunTimeOut;
 
-    private bool _isDead;
+    public bool IsDead;
 
     void Start()
     {
-        _isDead = false;
+        IsDead = false;
         AttackTimeOut = float.MinValue;
+        SetUltimateTargetState(false);
     }
 
     void Update()
     {
-        if(_isDead)
+        if(IsDead)
         {
             return;
         }
@@ -102,11 +105,19 @@ public class EnemyController : MonoBehaviour
 
     public void SetBasicAttackState(bool state)
     {
+        if(!IsAttacking() && state)
+        {
+            return;
+        }
         BasicAttack.SetActive(state);
     }
 
     public void SetSpecialAttackState(bool state)
     {
+        if(!IsAttacking() && state)
+        {
+            return;
+        }
         SpecialAttack.SetActive(state);
     }
 
@@ -120,7 +131,11 @@ public class EnemyController : MonoBehaviour
 
     private void GetHit()
     {
+        _target.GainEnergy();
         _stunTimeOut = Time.time + 0.3f;
+        AttackTimeOut = 0f;
+        SetBasicAttackState(false);
+        SetSpecialAttackState(false);
         _animator.Rebind();
         _animator.SetTrigger("GetHit");
     }
@@ -132,10 +147,10 @@ public class EnemyController : MonoBehaviour
 
     public void ReceiveSpecialAttack(string attack, int id)
     {
-        _isDead = true;
+        IsDead = true;
         _navAgent.enabled = false;
 
-        this.transform.position = _target.transform.position + _target.transform.forward * 24f;
+        this.transform.DOMove(_target.transform.position + _target.transform.forward * 24f, 0.3f);
 
         var targetLookAt = _target.transform.position;
         targetLookAt.y = this.transform.position.y;
@@ -150,5 +165,10 @@ public class EnemyController : MonoBehaviour
         _animator.enabled = false;
         _collider.enabled = false;
         _hipsRigidBody.AddExplosionForce(100000f, _target.transform.position, 5000f);
+    }
+
+    public void SetUltimateTargetState(bool state)
+    {
+        _ultimateDisplay.SetActive(state);
     }
 }

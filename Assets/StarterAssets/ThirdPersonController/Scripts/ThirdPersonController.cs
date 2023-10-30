@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using DG.Tweening;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -18,6 +20,9 @@ namespace StarterAssets
         [Header("Colliders")]
         public GameObject LeftPunch;
         public GameObject RightLeg;
+        [SerializeField] private Image _energyImage;
+        [SerializeField] private EnemyController[] _enemies;
+        private EnemyController _ultiableEnemy;
 
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
@@ -111,6 +116,8 @@ namespace StarterAssets
         private bool _hasAnimator;
         private Dictionary<string, GameObject> _colliders = new Dictionary<string, GameObject>();
 
+        private float _currentEnergy;
+
         private bool IsCurrentDeviceMouse
         {
             get
@@ -155,6 +162,7 @@ namespace StarterAssets
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
+            UpdateEnergyDisplay();
         }
 
         private void Update()
@@ -165,6 +173,7 @@ namespace StarterAssets
             GroundedCheck();
             Move();
             BasicAttack();
+            UpdateUltiableEnemy();
             SpecialAttack();
         }
 
@@ -180,6 +189,65 @@ namespace StarterAssets
             _animIDFreeFall = Animator.StringToHash("FreeFall");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
             _animIDBasicAttack = Animator.StringToHash("BasicAttack");
+        }
+
+        public void GainEnergy()
+        {
+            _currentEnergy += 17.5f;
+            _currentEnergy = Mathf.Clamp(_currentEnergy, 0, 100f);
+            UpdateEnergyDisplay();
+        }
+
+        public void LooseEnergy()
+        {
+            _currentEnergy -= 10f;
+            _currentEnergy = Mathf.Clamp(_currentEnergy, 0, 100f);
+            UpdateEnergyDisplay();
+        }
+
+        private void UpdateEnergyDisplay()
+        {
+            _energyImage.DOFillAmount(_currentEnergy / 100f, 0.3f);
+        }
+
+        private void UpdateUltiableEnemy()
+        {
+            var prevEnemy = _ultiableEnemy;
+
+            _ultiableEnemy = null;
+
+            if(_currentEnergy >= 100)
+            {
+                var closestEnemyDistance = float.MaxValue;
+
+                foreach(var enemy in _enemies)
+                {
+                    var distanceToEnemy = Vector3.Distance(this.transform.position, enemy.transform.position);
+                    if(distanceToEnemy < 30f) 
+                    {
+                        if(distanceToEnemy > closestEnemyDistance)
+                        {
+                            continue;
+                        }
+
+                        var angle = Vector3.Angle(Camera.main.transform.forward, enemy.transform.position - this.transform.position);
+                        if(Mathf.Abs(angle) < 70f)
+                        {
+                            closestEnemyDistance = distanceToEnemy;
+                            _ultiableEnemy = enemy;
+                        }
+                    }
+                }
+            }
+
+            if(_ultiableEnemy != prevEnemy)
+            {
+                if(prevEnemy != null)
+                    prevEnemy.SetUltimateTargetState(false);
+
+                if(_ultiableEnemy != null)
+                    _ultiableEnemy.SetUltimateTargetState(true);
+            }
         }
 
         private void GroundedCheck()
@@ -361,6 +429,11 @@ namespace StarterAssets
 
         public void StartAttack(string attack)
         {
+            if(!IsAttacking())
+            {
+                return;
+            }
+
             if(_colliders.TryGetValue(attack, out var collider))
             {
                 collider.SetActive(true);
@@ -388,8 +461,6 @@ namespace StarterAssets
             _input.basicAttack = false;
         }
 
-        public EnemyController EnemyController;
-
         private int _attacksDone;
 
         private void SpecialAttack()
@@ -399,12 +470,21 @@ namespace StarterAssets
                 _input.specialAttack = false;
                 return;
             }
+
+            if(_currentEnergy < 100f || _ultiableEnemy == null)
+            {
+                return;
+            }
+
+            _currentEnergy = 0f;
+            UpdateEnergyDisplay();
+
             var attackToDo = _attacksDone % 2 == 0 ? "SpecialAttack_01" : "SpecialAttack_02";
-            var targetLookAt = EnemyController.transform.position;
+            var targetLookAt = _ultiableEnemy.transform.position;
             targetLookAt.y = this.transform.position.y;
             this.transform.LookAt(targetLookAt);
             AttackTimeOut = Time.time + 0.5f;
-            EnemyController.ReceiveSpecialAttack(attackToDo, _attacksDone % 2);
+            _ultiableEnemy.ReceiveSpecialAttack(attackToDo, _attacksDone % 2);
             _animator.Play(attackToDo);
             _input.specialAttack = false;
             _attacksDone++;
@@ -466,6 +546,14 @@ namespace StarterAssets
 
         private void GetHit()
         {
+            if(IsAttacking())
+            {
+                return;
+            }
+
+            LooseEnergy();
+            ResetAllColliders();
+            AttackTimeOut = 0f;
             Debug.Log("ARG!");
         }
     }
