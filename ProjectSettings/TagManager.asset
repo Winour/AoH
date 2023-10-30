@@ -7,6 +7,7 @@ TagManager:
   - ClingPoint
   - CinemachineTarget
   - PlayerAttack
+  - EnemyAttack
   layers:
   - Default
   - TransparentFX
@@ -19,8 +20,8 @@ TagManager:
   - DestroyItDebris
   - Attack
   - Enemy
-  - 
-  - 
+  - Player
+  - PlayerIgnore
   - 
   - 
   - 

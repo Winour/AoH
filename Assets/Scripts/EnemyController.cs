@@ -12,6 +12,11 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private Collider _collider;
     [SerializeField] private Rigidbody _hipsRigidBody;
 
+    [Header("Attack Colliders")]
+    public GameObject BasicAttack;
+    public GameObject SpecialAttack;
+    public float AttackTimeOut;
+
     private float _currentSpeedAnimator;
     private float _stunTimeOut;
 
@@ -19,7 +24,7 @@ public class EnemyController : MonoBehaviour
 
     void Start()
     {
-        _isDead = true;
+        _isDead = false;
     }
 
     void Update()
@@ -29,21 +34,44 @@ public class EnemyController : MonoBehaviour
             return;
         }
 
+        if(!IsAttacking() && CanAttack())
+        {
+            var distanceToPlayer = Vector3.Distance(this.transform.position, _target.transform.position);
+
+            if(distanceToPlayer < 8f)
+            {
+                AttackTimeOut = Time.time + 0.5f;
+                _animator.SetTrigger("BasicAttack");
+            }
+        }
+
+        if(IsAttacking())
+        {
+            _navAgent.enabled = false;
+            return;
+        }
+        
+        _navAgent.enabled = true;
+
         if(IsStunned())
         {
             _navAgent.speed = 0;
             _animator.SetFloat("Speed", 0);
         }
 
+
         NavMeshPath path = new NavMeshPath();
         if(_navAgent.CalculatePath(_target.transform.position, path))
         {
             _navAgent.SetPath(path);
 
-            if(_navAgent.remainingDistance < 10f)
+            if(_navAgent.remainingDistance < 7f)
             {
                 _navAgent.speed = 0;
                 _currentSpeedAnimator = Mathf.Lerp(_currentSpeedAnimator, 0f, 0.5f);
+                var targetLookAt = _target.transform.position;
+                targetLookAt.y = this.transform.position.y;
+                this.transform.LookAt(targetLookAt);
             }
             else
             {
@@ -55,15 +83,35 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    private bool CanAttack()
+    {
+        return AttackTimeOut + 2f < Time.time;
+    }
+
+    private bool IsAttacking()
+    {
+        return AttackTimeOut > Time.time;
+    }
+
+    public void SetBasicAttackState(bool state)
+    {
+        BasicAttack.SetActive(state);
+    }
+
+    public void SetSpecialAttackState(bool state)
+    {
+        SpecialAttack.SetActive(state);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("PlayerAttack"))
         {
-            Stun();
+            GetHit();
         }
     }
 
-    private void Stun()
+    private void GetHit()
     {
         _stunTimeOut = Time.time + 0.3f;
         _animator.Rebind();

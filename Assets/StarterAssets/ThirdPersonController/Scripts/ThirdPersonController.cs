@@ -97,7 +97,6 @@ namespace StarterAssets
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
         private int _animIDBasicAttack;
-        private int _animIDSpecialAttack;
 
 #if ENABLE_INPUT_SYSTEM 
         private PlayerInput _playerInput;
@@ -181,7 +180,6 @@ namespace StarterAssets
             _animIDFreeFall = Animator.StringToHash("FreeFall");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
             _animIDBasicAttack = Animator.StringToHash("BasicAttack");
-            _animIDSpecialAttack = Animator.StringToHash("SpecialAttack_01");
         }
 
         private void GroundedCheck()
@@ -456,6 +454,19 @@ namespace StarterAssets
             {
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if(other.CompareTag("EnemyAttack"))
+            {
+                GetHit();
+            }
+        }
+
+        private void GetHit()
+        {
+            Debug.Log("ARG!");
         }
     }
 }
