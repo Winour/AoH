@@ -15,7 +15,7 @@ public class EnemyController : MonoBehaviour
     [Header("Attack Colliders")]
     public GameObject BasicAttack;
     public GameObject SpecialAttack;
-    public float AttackTimeOut;
+    [HideInInspector] public float AttackTimeOut;
 
     private float _currentSpeedAnimator;
     private float _stunTimeOut;
@@ -25,6 +25,7 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         _isDead = false;
+        AttackTimeOut = float.MinValue;
     }
 
     void Update()
@@ -38,7 +39,13 @@ public class EnemyController : MonoBehaviour
         {
             var distanceToPlayer = Vector3.Distance(this.transform.position, _target.transform.position);
 
-            if(distanceToPlayer < 8f)
+            if(distanceToPlayer < 15f)
+            {
+                AttackTimeOut = Time.time + 0.5f;
+                _animator.SetTrigger("SpecialAttack");
+            }
+            else 
+                if(distanceToPlayer < 8f)
             {
                 AttackTimeOut = Time.time + 0.5f;
                 _animator.SetTrigger("BasicAttack");
