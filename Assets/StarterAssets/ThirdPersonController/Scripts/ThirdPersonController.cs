@@ -225,6 +225,11 @@ namespace StarterAssets
 
                 foreach(var enemy in _enemies)
                 {
+                    if(enemy.IsDead)
+                    {
+                        continue;
+                    }
+
                     var distanceToEnemy = Vector3.Distance(this.transform.position, enemy.transform.position);
                     if(distanceToEnemy < 30f) 
                     {
@@ -583,7 +588,7 @@ namespace StarterAssets
             LooseEnergy();
             ResetAllColliders();
             AttackTimeOut = 0f;
-            _stunTimeOut = Time.time + 0.8f;
+            _stunTimeOut = Time.time + 0.4f;
             _animator.Rebind();
             _animator.Play("GetHit");
         }
