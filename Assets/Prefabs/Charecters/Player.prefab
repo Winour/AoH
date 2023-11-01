@@ -1626,7 +1626,7 @@ GameObject:
   - component: {fileID: 5866666020621028528}
   - component: {fileID: 5866666020621028529}
   - component: {fileID: 5866666020621028531}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1691,13 +1691,13 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 6.43
+  m_Height: 10
   m_Radius: 1.21
   m_SlopeLimit: 45
   m_StepOffset: 0.25
   m_SkinWidth: 0.02
   m_MinMoveDistance: 0
-  m_Center: {x: 0, y: 3, z: 0}
+  m_Center: {x: 0, y: 5, z: 0}
 --- !u!114 &5866666020621028527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1733,6 +1733,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LeftPunch: {fileID: 4497497771326939856}
   RightLeg: {fileID: 5771489848246193038}
+  _energyImage: {fileID: 0}
+  _enemies:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   MoveSpeed: 26
   RotationSmoothTime: 0.12
   SpeedChangeRate: 25
@@ -1764,7 +1769,7 @@ MonoBehaviour:
   CameraAngleOverride: 0
   LockCameraPosition: 0
   AttackTimeOut: 0
-  EnemyController: {fileID: 0}
+  _gameOverMenu: {fileID: 0}
 --- !u!114 &5866666020621028529
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -563,6 +563,7 @@ namespace StarterAssets
             if(other.CompareTag("EnemyAttack"))
             {
                 GetHit();
+                other.gameObject.SetActive(false);
             }
         }
 

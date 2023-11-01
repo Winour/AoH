@@ -131,6 +131,11 @@ public class EnemyController : MonoBehaviour
 
     private void GetHit()
     {
+        if(SpecialAttack.activeInHierarchy)
+        {
+            return;
+        }
+
         _target.GainEnergy();
         _stunTimeOut = Time.time + 0.3f;
         AttackTimeOut = 0f;
